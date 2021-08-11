@@ -1,0 +1,44 @@
+{
+  "name": "eventbridge-canon",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "populate": "babel-node scripts/populate.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-eventbridge": "^3.21.0",
+    "@aws-sdk/client-schemas": "^3.21.0",
+    "@headlessui/react": "^1.3.0",
+    "@heroicons/react": "^1.0.1",
+    "@monaco-editor/react": "^4.2.1",
+    "@tailwindcss/forms": "^0.3.3",
+    "chalk": "^4.1.2",
+    "faker": "^5.5.3",
+    "json-schema-faker": "^0.5.0-rcv.38",
+    "lowdb": "^2.1.0",
+    "next": "11.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-hot-toast": "^2.1.0",
+    "use-clipboard-copy": "^0.2.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/node": "^7.14.7",
+    "@babel/preset-env": "^7.14.4",
+    "@types/react": "^17.0.16",
+    "autoprefixer": "^10.2.6",
+    "dotenv": "^10.0.0",
+    "eslint": "7.30.0",
+    "eslint-config-next": "11.0.1",
+    "next-transpile-modules": "^8.0.0",
+    "postcss": "^8.3.5",
+    "tailwindcss": "^2.2.4",
+    "typescript": "^4.3.5"
+  }
+}

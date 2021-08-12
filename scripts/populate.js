@@ -54,7 +54,7 @@ const populate = async () => {
 
   Next run the command below to start EventBridge Canon
 
-    ${chalk.blue(`npm run start`)}
+    ${chalk.blue(`npm run dev`)}
 `
   );
 };

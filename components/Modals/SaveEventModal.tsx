@@ -72,7 +72,6 @@ export const SaveEventModal = ({ isOpen = false, onCreate = () => {}, onCancel =
                         ))}
                       </select>
                     </div>
-                    <span className="block w-full text-right text-xs text-pink-500">Create Collection</span>
                   </div>
                 </div>
               </div>

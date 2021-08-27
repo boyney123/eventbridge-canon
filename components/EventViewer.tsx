@@ -8,12 +8,13 @@ import { Menu, Transition } from '@headlessui/react';
 import { IAWSEventPayload, ILog } from '@/types/index';
 
 import Editor from '@/components/Editor';
+
 import SaveEventModal from '@/components/Modals/SaveEventModal';
+import ViewEventLog from '@/components/Modals/ViewEventLog';
+import PublishEventIntervalModal from '@/components/Modals/PublishEventIntervalModal';
 
 import useEvents from '@/hooks/useEvents';
 import useLogs from '@/hooks/useLogs';
-
-import ViewEventLog from '@/components/Modals/ViewEventLog';
 
 const tabs = [
   { name: 'Event', href: '#', current: true },
@@ -41,6 +42,7 @@ interface IEventViewerProps {
 
 const EventViewer = ({ id, name, schemaName, description, version, payload, source, detailType, eventBus, isEditingEvent = false, collectionId }: IEventViewerProps) => {
   const [editorValue, setEditorValue] = useState(payload);
+  const [interval, setCustomInterval] = useState(null);
 
   const clipboard = useClipboard();
 
@@ -50,16 +52,15 @@ const EventViewer = ({ id, name, schemaName, description, version, payload, sour
   }, [id, name, detailType]);
 
   const [showSaveEventModal, setShowEventModal] = useState(false);
+  const [showPublishIntervalModal, setShowPublishIntervalModal] = useState(false);
   const [selectedLog, setSelectedLog] = useState();
+  const [__, { getLogsForEvent }] = useLogs();
 
   const [_, { saveEvent, updateEvent, publishEvent }] = useEvents();
-  const [__, { getLogsForEvent }] = useLogs();
 
   const logs = getLogsForEvent(id, detailType);
 
   const sendEventToBus = async (payload) => {
-    console.log('PUBLISH', id);
-
     try {
       toast.promise(
         publishEvent({
@@ -156,6 +157,22 @@ const EventViewer = ({ id, name, schemaName, description, version, payload, sour
     }
   };
 
+  const handleCreateInterval = async ({ interval: intervalInSeconds }) => {
+    setCustomInterval({
+      value: intervalInSeconds,
+      interval: setInterval(() => {
+        handlePublishEvent();
+      }, intervalInSeconds * 1000),
+    });
+
+    setShowPublishIntervalModal(false);
+  };
+
+  const stopPublishInterval = async () => {
+    clearInterval(interval.interval);
+    setCustomInterval(null);
+  };
+
   const handleExportEvent = async () => {
     clipboard.copy(
       JSON.stringify(
@@ -183,6 +200,8 @@ const EventViewer = ({ id, name, schemaName, description, version, payload, sour
       </Head>
       <SaveEventModal isOpen={showSaveEventModal} onCreate={handleSaveEvent} onCancel={() => setShowEventModal(false)} />
       <ViewEventLog isOpen={!!selectedLog} log={selectedLog} onCancel={() => setSelectedLog(null)} onResend={handleResendEvent} />
+      <PublishEventIntervalModal isOpen={!!showPublishIntervalModal} onCancel={() => setShowPublishIntervalModal(null)} onCreate={handleCreateInterval} />
+
       <>
         <header className="w-full">
           <div className=" bg-white flex">
@@ -208,13 +227,47 @@ const EventViewer = ({ id, name, schemaName, description, version, payload, sour
                 </div>
 
                 <div className="space-x-3">
-                  <button
-                    onClick={() => handlePublishEvent()}
-                    type="button"
-                    className="inline-flex items-center px-4 py-3 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
-                  >
-                    Publish Event
-                  </button>
+                  <span className="relative z-0 inline-flex shadow-sm rounded-md">
+                    <button
+                      onClick={() => {
+                        interval ? stopPublishInterval() : handlePublishEvent();
+                      }}
+                      type="button"
+                      className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-pink-300 bg-pink-600 text-sm font-medium text-white hover:bg-pink-500 focus:z-10 focus:outline-none focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
+                    >
+                      {interval ? 'Stop Publishing' : 'Publish Event'}
+                    </button>
+                    <Menu as="span" className="relative block">
+                      {({ open }) => (
+                        <>
+                          <Menu.Button className="relative inline-flex items-center px-2 py-2.5 rounded-r-md border border-pink-300 bg-pink-600 text-sm font-medium text-white hover:bg-pink-500 focus:z-10 focus:outline-none focus:ring-1 focus:ring-pink-500 focus:border-pink-500">
+                            <span className="sr-only">Open options</span>
+                            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                          </Menu.Button>
+                          <Transition
+                            show={open}
+                            as={Fragment}
+                            enter="transition ease-out duration-100"
+                            enterFrom="transform opacity-0 scale-95"
+                            enterTo="transform opacity-100 scale-100"
+                            leave="transition ease-in duration-75"
+                            leaveFrom="transform opacity-100 scale-100"
+                            leaveTo="transform opacity-0 scale-95"
+                          >
+                            <Menu.Items static className="origin-top-right absolute right-0 mt-2 -mr-1 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                              <div className="py-1 hover:bg-gray-100">
+                                <Menu.Item>
+                                  <button onClick={() => setShowPublishIntervalModal(true)} className="text-gray-700 block px-4 py-2 text-sm">
+                                    Publish on Interval
+                                  </button>
+                                </Menu.Item>
+                              </div>
+                            </Menu.Items>
+                          </Transition>
+                        </>
+                      )}
+                    </Menu>
+                  </span>
                   <span className="relative z-0 inline-flex shadow-sm rounded-md">
                     <button
                       onClick={() => {
@@ -294,6 +347,7 @@ const EventViewer = ({ id, name, schemaName, description, version, payload, sour
                     </div>
                   </div>
                 </div>
+                {interval && interval.value && <div className="mr-2 mt-4 text-xs animate-pulse text-gray-700 bg-green-200 p-2 rounded-lg">Currently publishing event every {interval.value} seconds...</div>}
               </div>
             </div>
           </div>

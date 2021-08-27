@@ -28,6 +28,7 @@ export interface ICollectionEvent {
   source: string;
   version: string;
   eventBusName: string;
+  schemaName: string;
   payload: IAWSEventPayload;
 }
 

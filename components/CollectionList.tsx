@@ -16,6 +16,9 @@ export default function CollectionList() {
   const [collections, { saveCollection }] = useCollections();
   const [showCollectionModal, setShowCollectionModal] = useState(false);
 
+  const urlParts = window.location.href.split('/');
+  const selectedEvent = urlParts[urlParts.length - 1];
+
   const handleCreate = async (collection) => {
     try {
       await saveCollection(collection);
@@ -58,7 +61,7 @@ export default function CollectionList() {
                       </Disclosure.Button>
                       <Disclosure.Panel className="space-y-1">
                         {collection.events.map((event) => (
-                          <div key={event.id} className="pl-4 pr-2 py-2 hover:bg-gray-50 border-b border-gray-100">
+                          <div key={event.id} className={`pl-4 pr-2 py-2 hover:bg-gray-50 border-b border-gray-100 ${event.id === selectedEvent ? 'bg-gray-100' : ''}`}>
                             <Link href={`/collection/${collection.id}/event/${event.id}`}>
                               <a className="group w-full items-center  text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50 ">
                                 <span className="block text-gray-800">{event.name}</span>

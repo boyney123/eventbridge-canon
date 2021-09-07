@@ -1,7 +1,7 @@
 <div align="center">
 
-<h2>AWS EventBridge Canon 🗺</h2>
-<p>Simple UI to Publish, Save and Share AWS EventBridge Events</>
+<h2>Amazon EventBridge Canon 🗺</h2>
+<p>Simple UI to Publish, Save and Share Amazon EventBridge Events</>
 
 [![MIT License][license-badge]][license]
 [![PRs Welcome][prs-badge]][prs]
@@ -23,7 +23,7 @@
 
 # The problem
 
-I'm a huge fan of [AWS EventBridge](https://aws.amazon.com/eventbridge/) and the ability it can give us to quickly create Event Driven Architectures and help businesses scale and grow.
+I'm a huge fan of [Amazon EventBridge](https://aws.amazon.com/eventbridge/) and the ability it can give us to quickly create Event Driven Architectures and help businesses scale and grow.
 
 Like most things, over time you get more and more events you need to manage.
 

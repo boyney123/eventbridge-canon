@@ -23,7 +23,8 @@
       "@/lib/*": ["lib/*"],
       "@/utils/*": ["utils/*"],
       "@/styles/*": ["styles/*"]
-    }
+    },
+    "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "lib/aws.js"],
   "exclude": ["node_modules"]
